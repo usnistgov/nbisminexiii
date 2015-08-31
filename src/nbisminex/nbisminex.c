@@ -27,9 +27,10 @@
 #include <lfs.h>
 
 #include <minexdata.h>
-#include <minex.h>
+#include <minexiii.h>
+#include <nbisminex.h>
 
-uint32_t
+int32_t
 create_template(const uint8_t* raw_image, const uint8_t finger_quality,
     const uint8_t finger_position, const uint8_t impression_type,
     const uint16_t height, const uint16_t width, uint8_t *out_template)
@@ -49,11 +50,11 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 	int mcount;
 	int qmaplen, qmapidx, qmapval;
 
-	status = MINEX_EXTRACTION_FAILED_UNSPECIFIED;
+	status = MINEX_RET_FAILURE_UNSPECIFIED;
 	fmr = NULL;
 
 	/* get_minuitiae() wants image depth as pixels/mm, so convert */
-	ppmm = (double)NBIS_IMAGE_PPI / (double)MM_PER_INCH;
+	ppmm = (double)MINEX_IMAGE_PPI / (double)MM_PER_INCH;
 	ret = get_minutiae(&minutiae, &quality_map, &direction_map,
 	    &low_contrast_map, &low_flow_map, &high_curve_map, &map_w,
 	    &map_h, &bdata, &bw, &bh, &bd,
@@ -61,7 +62,7 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 	    ppmm, &lfsparms_V2);
 
 	if (ret != 0)
-		return (MINEX_EXTRACTION_FAILED_UNSPECIFIED);
+		return (MINEX_RET_FAILURE_UNSPECIFIED);
 
 	ret = new_fmr(FMR_STD_ANSI, &fmr);
 	if (ret != 0)
@@ -138,7 +139,7 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 	if (ret != WRITE_OK)
 		goto err_out;
 
-	status = MINEX_SUCCESS;
+	status = MINEX_RET_SUCCESS;
 
 err_out:
 	free_minutiae(minutiae);
@@ -154,7 +155,7 @@ err_out:
 	return (status);
 }
 
-uint32_t 
+int32_t 
 match_templates(const uint8_t *probe_template, const uint8_t *gallery_template, 
     float *score)
 {
@@ -175,7 +176,7 @@ match_templates(const uint8_t *probe_template, const uint8_t *gallery_template,
 
 	if ((probe_template == NULL) || (gallery_template == NULL) ||
 	    (score == NULL))
-		return (MINEX_MATCH_FAILED_NULL_PARAMETER);
+		return (MINEX_RET_FAILURE_NULL_TEMPLATE);
 
 	bufsz = FMR_MAX_NUM_MINUTIAE * sizeof(struct raw_fmd);
 	buf = malloc(bufsz);
@@ -189,7 +190,7 @@ match_templates(const uint8_t *probe_template, const uint8_t *gallery_template,
 	/*
 	 * Get the minutiae from the first view in the probe template
 	 */
-	status = MINEX_MATCH_FAILED_PROBE_PARSING;
+	status = MINEX_RET_FAILURE_BAD_VERIFICATION_TEMPLATE;
 	INIT_BDB(&bdb, probe_template, FMR_ANSI_MAX_SHORT_LENGTH);
 	new_fmr(FMR_STD_ANSI, &fmr);
 	if (scan_fmr(&bdb, fmr) != READ_OK) {
@@ -219,7 +220,7 @@ match_templates(const uint8_t *probe_template, const uint8_t *gallery_template,
 	}
 	free_fmr(fmr);
 
-	status = MINEX_MATCH_FAILED_GALLERY_PARSING;
+	status = MINEX_RET_FAILURE_BAD_ENROLLMENT_TEMPLATE;
 	INIT_BDB(&bdb, gallery_template, FMR_ANSI_MAX_SHORT_LENGTH);
 	new_fmr(FMR_STD_ANSI, &fmr);
 	if (scan_fmr(&bdb, fmr) != READ_OK) {
@@ -253,7 +254,7 @@ match_templates(const uint8_t *probe_template, const uint8_t *gallery_template,
 	free_fmr(fmr);
 	*score = (float)bozorth_main(bzxyt_p, bzxyt_g);
 
-	status = MINEX_SUCCESS;
+	status = MINEX_RET_SUCCESS;
 
 err_out:
 	if (buf != NULL)
@@ -263,7 +264,7 @@ err_out:
 	if (bzxyt_g != NULL)
 		free(bzxyt_g);
 
-	if (status != MINEX_SUCCESS)
+	if (status != MINEX_RET_SUCCESS)
 		*score = -1.0;
 	return (status);
 }

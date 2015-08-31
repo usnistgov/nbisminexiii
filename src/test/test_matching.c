@@ -7,7 +7,7 @@
 
 #include <biomdimacro.h>
 #include <fmr.h>
-#include <minex.h>
+#include <minexiii.h>
 
 #define P 0
 #define G 1
@@ -52,8 +52,9 @@ main(int argc, char** argv)
 		fclose(fp);
 		template[i] = malloc(16384);
 
-		ret = create_template(buf, QUAL_EXCELLENT, FINGPOS_UK,
-		     IMPTYPE_LP, height[i], width[i], template[i]);
+		ret = create_template(buf, MINEX_QUALITY_EXCELLENT,
+		    MINEX_FINGER_UNKNOWN, MINEX_IMP_LIVESCAN_PLAIN,
+		    height[i], width[i], template[i]);
 		if (ret != 0) {
 			fprintf(stderr, "Failed to create template.\n");
 			exit(EXIT_FAILURE);
@@ -63,7 +64,7 @@ main(int argc, char** argv)
 	}
 	printf("Calling match_templates()...");
 	ret = match_templates(template[P], template[G], &score);
-	if (ret != MINEX_SUCCESS)
+	if (ret != MINEX_RET_SUCCESS)
 		printf(" failed!\n");
 	else
 		printf(" score returned is %f\n", score);
