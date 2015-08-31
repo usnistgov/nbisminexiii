@@ -12,7 +12,7 @@ TARGETS = test_matching
 
 all: $(TARGETS)
 test_matching: test_matching.c
-	$(CC) $(CFLAGS) -I$(LOCALINC) -L$(LOCALLIB) -lnbisminex -lincits -lbozorth3 -l mindtct $< -o $@
+	$(CC) $(CFLAGS) -I$(LOCALINC) -L$(LOCALLIB) -lminexiii_nbisminexiii_$(VERSION) -lincits -lbozorth3 -l mindtct $< -o $@
 	$(CP) $@ $(LOCALBIN)
 
 clean:
