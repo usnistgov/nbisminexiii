@@ -268,3 +268,17 @@ err_out:
 		*score = -1.0;
 	return (status);
 }
+
+int32_t
+get_pids(
+    uint32_t *template_generator,
+    uint32_t *template_matcher)
+{
+	*template_generator = (((uint32_t)NBIS_CBEFF_PRODUCT_ID_TMPL << 16) | 
+	    NBIS_VERSION_TMPL);
+	*template_matcher = (((uint32_t)NBIS_CBEFF_PRODUCT_ID_MATCH << 16) | 
+	    NBIS_VERSION_MATCH);
+	
+	return (MINEX_RET_SUCCESS);
+}
+

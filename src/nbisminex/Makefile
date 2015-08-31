@@ -12,7 +12,8 @@ include ../common.mk
 SOURCES = nbisminex.c minexdata.c
 LIBS = -lc -lmindtct -lincits -lbozorth3
 #
-LIBRARY = libnbisminex
+VERSION = $(shell grep NBIS_VERSION_TMPL ../include/nbisminex.h | sed 's/.*0x\(.*\);/\1/g')
+LIBRARY = libminexiii_nbisminexiii_$(VERSION)
 LOCALINC = -I../include 
 
 all: $(SOURCES)
