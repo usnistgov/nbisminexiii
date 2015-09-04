@@ -9,7 +9,7 @@
  */
 
 /*
- * This file implements the MINEX-II API, using NBIS mindtct minutiae
+ * This file implements the MINEX III API, using NBIS mindtct minutiae
  * detector and bozorth matcher from the NBIS project.
  */
 #include <sys/queue.h>
@@ -23,6 +23,7 @@
 #include <biomdimacro.h>
 #include <bozorth.h>
 #include <bz_minex.h>
+#include <defs.h>
 #include <fmr.h>
 #include <lfs.h>
 
@@ -77,8 +78,8 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 	fmr->record_length_type = FMR_ANSI_SMALL_HEADER_LENGTH;
 	fmr->x_image_size = width;
 	fmr->y_image_size = height;
-	fmr->x_resolution = (unsigned short)ppmm * 10;
-	fmr->y_resolution = (unsigned short)ppmm * 10;
+	fmr->x_resolution = (unsigned short)sround_uint(ppmm * 10);
+	fmr->y_resolution = (unsigned short)sround_uint(ppmm * 10);
 	fmr->num_views = 1;
 
 	fvmr->finger_number = finger_position;
@@ -87,8 +88,8 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 	fvmr->finger_quality = finger_quality;
 	fvmr->x_image_size = width;
 	fvmr->y_image_size = height;
-	fvmr->x_resolution = (unsigned short)ppmm * 10;
-	fvmr->y_resolution = (unsigned short)ppmm * 10;
+	fvmr->x_resolution = (unsigned short)sround_uint(ppmm * 10);
+	fvmr->y_resolution = (unsigned short)sround_uint(ppmm * 10);
 	add_fvmr_to_fmr(fvmr, fmr);
 	fmr->record_length += FVMR_HEADER_LENGTH;
 
