@@ -109,7 +109,7 @@ create_template(const uint8_t* raw_image, const uint8_t finger_quality,
 		if (qmapval < NBIS_QMAP_MIN)
 			continue;
 		mcount++;
-		if (mcount > FMR_MAX_NUM_MINUTIAE)
+		if (mcount > MINEX_MAX_MINUTIAE)
 			break;
 
 		ret = new_fmd(FMR_STD_ANSI, &fmd, i);
