@@ -266,7 +266,7 @@ err_out:
 		free(bzxyt_g);
 
 	if (status != MINEX_RET_SUCCESS)
-		*score = -1.0;
+		*score = 0;
 	return (status);
 }
 
