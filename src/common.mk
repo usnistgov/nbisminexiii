@@ -18,6 +18,7 @@ PWD := $(shell pwd)
 OS := $(shell uname -s)
 ARCH := $(shell uname -m)
 CFLAGS := -std=c99
+VERSION = $(shell grep NBIS_VERSION_TMPL $(LOCALINC)/nbisminex.h | sed 's/.*0x\(.*\);/\1/g')
 ifeq ($(OS), Linux)
 	CFLAGS += -fPIC
 endif
